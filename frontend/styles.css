@@ -191,4 +191,53 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);padding-top:
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--border2)}
-@media(max-width:768px){.sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.menu-toggle{display:flex}.panel{width:100%}.capabilities{grid-template-columns:repeat(2,1fr)}.welcome h1{font-size:22px}}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-100%);width:260px}
+  .sidebar.open{transform:translateX(0)}
+  .menu-toggle{display:flex}
+  .panel{width:100%;top:0;bottom:0}
+  .capabilities{grid-template-columns:repeat(2,1fr);gap:6px;max-width:100%}
+  .cap-item{padding:10px 6px;font-size:9px}
+  .cap-item svg{width:16px;height:16px}
+  .welcome h1{font-size:20px}
+  .welcome p{font-size:11px;margin-bottom:16px}
+  .welcome-logo{width:50px;height:50px;margin-bottom:10px}
+  .header{padding:6px 10px;gap:6px}
+  .header-center{gap:4px;flex-wrap:wrap;justify-content:flex-end}
+  .cyber-select{padding:4px 6px;font-size:10px;max-width:48%;min-width:0;flex:1}
+  .chat-area{padding:10px}
+  .msg{gap:6px}
+  .msg-avatar{width:22px;height:22px;font-size:8px}
+  .msg-text{font-size:11px;line-height:1.5}
+  .msg-text pre{padding:6px;font-size:10px}
+  .input-area{padding:8px 10px}
+  .input-box{padding:6px 8px;gap:6px}
+  #msgInput{font-size:14px}
+  .attach-btn svg{width:18px;height:18px}
+  .send-btn{width:28px;height:28px}
+  .send-btn svg{width:12px;height:12px}
+  .input-hints{font-size:8px;margin-top:3px}
+  .modal-content{width:95%;max-height:85vh}
+  .modal-body{padding:12px}
+  .setting-group label{font-size:9px}
+  .setting-group input,.setting-group textarea{font-size:13px;padding:8px 10px}
+  .cyber-btn{font-size:12px;padding:10px}
+  .panel-header{padding:8px 10px;font-size:10px}
+  .panel-body{padding:10px}
+  .tool-btn{padding:8px 10px;font-size:10px;gap:6px}
+  .tool-btn svg{width:12px;height:12px}
+  .file-path-input{font-size:10px;padding:3px 8px}
+  .terminal-input{font-size:13px}
+  .terminal-output{font-size:10px;padding:8px}
+  .info-row{font-size:10px}
+  .info-value{max-width:55%}
+  .sys-tab{padding:4px 8px;font-size:9px}
+  .hash-results .hash-row,.encode-results .hash-row{font-size:9px}
+  .cyber-btn-sm{padding:4px 8px;font-size:9px}
+  .file-entry{padding:4px 10px;font-size:10px}
+  .file-entry .size{width:60px}
+  .file-entry .date{width:80px}
+  .col-size{width:60px}
+  .col-date{width:80px}
+  .file-list-header{padding:4px 10px;font-size:8px}
+}
