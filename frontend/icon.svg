@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0a0a0f"/>
+  <polygon points="256,30 460,150 460,362 256,482 52,362 52,150" fill="none" stroke="#ff2244" stroke-width="12"/>
+  <polygon points="256,100 390,185 390,327 256,412 122,327 122,185" fill="none" stroke="#ff2244" stroke-width="8" opacity="0.5"/>
+  <circle cx="256" cy="256" r="50" fill="#ff2244" opacity="0.8"/>
+  <text x="256" y="275" text-anchor="middle" fill="#0a0a0f" font-family="monospace" font-size="48" font-weight="bold">HX</text>
+</svg>

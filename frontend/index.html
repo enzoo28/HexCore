@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HexCore">
+    <meta name="theme-color" content="#ff2244">
+    <meta name="description" content="Reverse Engineering AI Assistant">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <title>HexCore Labs - Reverse Engineering AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="cyber-bg">
+        <canvas id="gridCanvas"></canvas>
+        <div class="hex-overlay"></div>
+        <div class="data-stream" id="dataStream"></div>
+        <div class="circuit-lines"></div>
+    </div>
+
+    <div class="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-hex">
+                        <svg viewBox="0 0 100 100"><polygon points="50,2 93,25 93,75 50,98 7,75 7,25" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="50,20 78,37 78,63 50,80 22,63 22,37" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="50" cy="50" r="8" fill="currentColor" opacity="0.3"/></svg>
+                    </div>
+                    <div><span class="logo-name">HEXCORE</span><span class="logo-sub">REVERSE ENGINEERING LAB</span></div>
+                </div>
+                <button class="btn-icon" id="newChatBtn" title="New Session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-title">SESSIONS</div>
+                <div class="session-list" id="sessionList"></div>
+            </div>
+
+            <div class="sidebar-section tools-section">
+                <div class="section-title">TOOLS</div>
+                <button class="tool-btn" onclick="togglePanel('filePanel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    File Explorer
+                </button>
+                <button class="tool-btn" onclick="togglePanel('terminalPanel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    Terminal
+                </button>
+                <button class="tool-btn" onclick="togglePanel('binaryPanel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Binary Analysis
+                </button>
+                <button class="tool-btn" onclick="togglePanel('toolsPanel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Tools
+                </button>
+                <button class="tool-btn" onclick="togglePanel('sysPanel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    System Info
+                </button>
+                <button class="tool-btn" onclick="openSettings()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Settings
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="status-bar"><span class="status-dot" id="statusDot"></span><span id="statusText">Connecting...</span></div>
+                <div class="system-info"><span id="platformInfo">--</span></div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="header">
+                <button class="btn-icon menu-toggle" id="menuToggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+                <div class="header-center">
+                    <select id="providerSelect" class="cyber-select"><option value="ollama">Ollama (Local)</option><option value="groq">Groq (Free)</option><option value="openrouter">OpenRouter (Free)</option></select>
+                    <select id="modelSelect" class="cyber-select"><option value="qwen3.5:9b">qwen3.5:9b</option></select>
+                </div>
+                <button class="btn-icon" id="clearBtn" title="Clear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+            </header>
+
+            <div class="chat-area" id="chatArea">
+                <div class="welcome" id="welcome">
+                    <div class="welcome-logo">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="0.8">
+                            <polygon points="50,2 93,25 93,75 50,98 7,75 7,25"/>
+                            <polygon points="50,18 79,35 79,65 50,82 21,65 21,35"/>
+                            <polygon points="50,34 65,43 65,57 50,66 35,57 35,43"/>
+                            <line x1="50" y1="2" x2="50" y2="18"/>
+                            <line x1="93" y1="25" x2="79" y2="35"/>
+                            <line x1="93" y1="75" x2="79" y2="65"/>
+                            <line x1="50" y1="98" x2="50" y2="82"/>
+                            <line x1="7" y1="75" x2="21" y2="65"/>
+                            <line x1="7" y1="25" x2="21" y2="35"/>
+                            <circle cx="50" cy="50" r="4" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h1>HEXCORE <span class="accent">AI</span></h1>
+                    <p>Advanced Reverse Engineering & Security Intelligence</p>
+                    <div class="capabilities">
+                        <div class="cap-item" onclick="quickAction('analyze this file for me')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Analyze Files</span></div>
+                        <div class="cap-item" onclick="quickAction('reverse engineer this binary')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>Reverse Engineer</span></div>
+                        <div class="cap-item" onclick="quickAction('write me a script to')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Write Code</span></div>
+                        <div class="cap-item" onclick="quickAction('scan for vulnerabilities in')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Security Scan</span></div>
+                        <div class="cap-item" onclick="quickAction('decode this')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Decode/Encrypt</span></div>
+                        <div class="cap-item" onclick="quickAction('help me understand how this works')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Explain Code</span></div>
+                    </div>
+                </div>
+                <div class="messages" id="messages"></div>
+            </div>
+
+            <div class="input-area">
+                <div id="imagePreview" class="image-preview" style="display:none"><img id="previewImg"><button class="remove-img" onclick="removeImage()">×</button></div>
+                <div class="input-box">
+                    <button class="attach-btn" id="attachBtn" title="Attach image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+                    <textarea id="msgInput" placeholder="Enter command or question..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                </div>
+                <div class="input-hints"><span>Enter to send | Shift+Enter newline</span><span id="modelInfo">--</span></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FILE EXPLORER PANEL -->
+    <div class="panel" id="filePanel">
+        <div class="panel-header">
+            <div class="panel-nav">
+                <button class="nav-btn" onclick="fileGoBack()" title="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                <button class="nav-btn" onclick="fileGoForward()" title="Forward"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+                <button class="nav-btn" onclick="fileGoUp()" title="Up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+                <button class="nav-btn" onclick="fileRefresh()" title="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+            </div>
+            <input type="text" class="file-path-input" id="filePathInput" value="" onkeydown="if(event.key==='Enter')fileNavigate(this.value)">
+            <button class="btn-icon" onclick="closePanel('filePanel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="panel-toolbar">
+            <input type="text" class="file-search" id="fileSearch" placeholder="Search files..." oninput="filterFiles(this.value)">
+            <button class="nav-btn" onclick="fileCreateFolder()" title="New Folder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg></button>
+        </div>
+        <div class="file-list-header">
+            <span class="col-name">Name</span>
+            <span class="col-size">Size</span>
+            <span class="col-date">Modified</span>
+        </div>
+        <div class="file-list" id="fileList"></div>
+    </div>
+
+    <!-- TERMINAL PANEL -->
+    <div class="panel" id="terminalPanel">
+        <div class="panel-header"><span>TERMINAL</span><button class="btn-icon" onclick="closePanel('terminalPanel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="terminal-body">
+            <div class="terminal-output" id="termOutput"></div>
+            <div class="terminal-input-row"><span class="prompt">hexcore@lab:~$</span><input type="text" id="termInput" class="terminal-input" placeholder="Enter command..."></div>
+        </div>
+    </div>
+
+    <!-- BINARY PANEL -->
+    <div class="panel" id="binaryPanel">
+        <div class="panel-header"><span>BINARY ANALYSIS</span><button class="btn-icon" onclick="closePanel('binaryPanel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="panel-body">
+            <div class="binary-drop" id="binaryDrop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><p>Drop file or click to analyze</p><input type="file" id="binaryFile" hidden></div>
+            <div class="binary-results" id="binaryResults"></div>
+        </div>
+    </div>
+
+    <!-- TOOLS PANEL -->
+    <div class="panel" id="toolsPanel">
+        <div class="panel-header"><span>TOOLS</span><button class="btn-icon" onclick="closePanel('toolsPanel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="panel-body">
+            <div class="tool-section">
+                <div class="tool-title">HASH GENERATOR</div>
+                <textarea id="hashInput" rows="2" placeholder="Enter text to hash..."></textarea>
+                <button class="cyber-btn-sm" onclick="generateHash()">Generate</button>
+                <div class="hash-results" id="hashResults"></div>
+            </div>
+            <div class="tool-section">
+                <div class="tool-title">ENCODER / DECODER</div>
+                <textarea id="encodeInput" rows="2" placeholder="Enter text to encode/decode..."></textarea>
+                <div class="encode-btns">
+                    <button class="cyber-btn-sm" onclick="doEncode('base64')">Base64</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('base64decode')">B64 Decode</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('hex')">Hex</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('hexdecode')">Hex Decode</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('url')">URL Encode</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('urldecode')">URL Decode</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('binary')">Binary</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('rot13')">ROT13</button>
+                    <button class="cyber-btn-sm" onclick="doEncode('reverse')">Reverse</button>
+                </div>
+                <div class="encode-results" id="encodeResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYSTEM INFO PANEL -->
+    <div class="panel" id="sysPanel">
+        <div class="panel-header"><span>SYSTEM INFO</span><button class="btn-icon" onclick="closePanel('sysPanel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="panel-body">
+            <div class="sys-tabs">
+                <button class="sys-tab active" onclick="loadSysInfo()">System</button>
+                <button class="sys-tab" onclick="loadProcesses()">Processes</button>
+                <button class="sys-tab" onclick="loadNetwork()">Network</button>
+                <button class="sys-tab" onclick="loadPorts()">Ports</button>
+            </div>
+            <div class="sys-content" id="sysContent">Loading...</div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header"><span>SETTINGS</span><button class="btn-icon" onclick="closeModal('settingsModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+            <div class="modal-body">
+                <div class="setting-group"><label>SERVER URL (for mobile - use your laptop's IP, e.g. 192.168.1.x)</label><input type="text" id="serverUrl" placeholder="http://192.168.1.100:5001/api"></div>
+                <div class="setting-group"><label>SYSTEM PROMPT</label><textarea id="systemPrompt" rows="6"></textarea></div>
+                <div class="setting-group"><label>GROQ API KEY (free at console.groq.com)</label><input type="password" id="groqKey" placeholder="gsk_..."></div>
+                <div class="setting-group"><label>OPENROUTER API KEY (free at openrouter.ai)</label><input type="password" id="openrouterKey" placeholder="sk-or-..."></div>
+                <button class="cyber-btn" onclick="saveSettings()">SAVE CONFIGURATION</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
