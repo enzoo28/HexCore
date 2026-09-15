@@ -6,23 +6,23 @@ let fileHistIdx=-1;
 let fileAllEntries=[];
 let currentImage=null;
 
+let messages,welcome,msgInput,sendBtn,providerSelect,modelSelect;
 const $=id=>document.getElementById(id);
-const messages=$('messages');
-const welcome=$('welcome');
-const msgInput=$('msgInput');
-const sendBtn=$('sendBtn');
-const providerSelect=$('providerSelect');
-const modelSelect=$('modelSelect');
-
 let API=localStorage.getItem('serverUrl')||'http://localhost:5001/api';
 
 document.addEventListener('DOMContentLoaded',()=>{
-    if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    messages=$('messages');
+    welcome=$('welcome');
+    msgInput=$('msgInput');
+    sendBtn=$('sendBtn');
+    providerSelect=$('providerSelect');
+    modelSelect=$('modelSelect');
+    if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));navigator.serviceWorker.register('/sw.js').catch(()=>{});}
     initCyberBg();
     checkStatus();
     loadModels();
     setupEvents();
-    const startPath=navigator.platform.includes('Win')?'C:\\':navigator.platform.includes('iPhone')||navigator.platform.includes('iPad')?'/':'/';
+    const startPath=navigator.platform.includes('Win')?'C:\\':'/';
     fileNavigate(startPath);
     msgInput.focus();
 });
@@ -261,7 +261,6 @@ function filterFiles(q){
 }
 
 function fmtSize(b){if(!b)return'';if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
-function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
 // ============ TERMINAL ============
 async function execTerminal(){
@@ -369,7 +368,7 @@ async function loadPorts(){
 function togglePanel(id){
     const p=$(id);const was=p.classList.contains('open');
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('open'));
-    if(!was){p.classList.add('open');if(id==='filePanel')openDir(currentPath||'C:\\');if(id==='sysPanel')loadSysInfo()}
+    if(!was){p.classList.add('open');if(id==='filePanel')openDir(currentPath||'/');if(id==='sysPanel')loadSysInfo()}
 }
 function closePanel(id){$(id).classList.remove('open')}
 function openSettings(){loadSettings();toggleModal('settingsModal')}
