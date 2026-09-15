@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     checkStatus();
     loadModels();
     setupEvents();
-    fileNavigate('C:\\');
+    const startPath=navigator.platform.includes('Win')?'C:\\':navigator.platform.includes('iPhone')||navigator.platform.includes('iPad')?'/':'/';
+    fileNavigate(startPath);
     msgInput.focus();
 });
 
@@ -207,7 +208,7 @@ function renderFileList(entries,basePath){
     const list=$('fileList');list.innerHTML='';
     fileAllEntries=entries;
     // Parent directory
-    if(basePath!=='C:\\'&&basePath!=='/'&&basePath!==''){
+    if(basePath!=='C:\\'&&basePath!=='/'&&basePath!=='\\'&&basePath.length>1){
         const up=document.createElement('div');
         up.className='file-entry dir';
         up.innerHTML=`<span class="icon">📁</span><span class="name">..</span><span class="size"></span><span class="date"></span>`;
@@ -250,7 +251,7 @@ async function openFile(path){
 
 function fileGoBack(){if(fileHistIdx>0){fileHistIdx--;openDir(fileHistory[fileHistIdx])}}
 function fileGoForward(){if(fileHistIdx<fileHistory.length-1){fileHistIdx++;openDir(fileHistory[fileHistIdx])}}
-function fileGoUp(){if(currentPath!=='C:\\'&&currentPath!=='/'){openDir(currentPath.replace(/[\\\/][^\\\/]+$/,'')||'C:\\')}}
+function fileGoUp(){if(currentPath!=='C:\\'&&currentPath!=='/'&&currentPath.length>1){const parent=currentPath.replace(/[\\\/][^\\\/]+$/,'');openDir(parent||'/')}}
 function fileRefresh(){openDir(currentPath)}
 function fileCreateFolder(){const name=prompt('Folder name:');if(name)fetch(`${API}/fs/mkdir`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:currentPath+'\\'+name})}).then(()=>fileRefresh())}
 function filterFiles(q){
