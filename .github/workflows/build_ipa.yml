@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Show Xcode version
         run: xcodebuild -version
@@ -26,6 +26,11 @@ jobs:
 
       - name: Sync Capacitor iOS
         run: npx cap sync ios
+
+      - name: List available schemes
+        run: |
+          cd ios/App
+          xcodebuild -list
 
       - name: Build .app (unsigned)
         run: |
