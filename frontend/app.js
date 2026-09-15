@@ -148,6 +148,7 @@ function showTyping(){const id='t'+Date.now();const d=document.createElement('di
 function removeTyping(id){const e=document.getElementById(id);if(e)e.remove()}
 function addError(e){const d=document.createElement('div');d.className='error-msg';d.textContent=e;messages.appendChild(d);scrollBottom()}
 function scrollBottom(){$('chatArea').scrollTop=$('chatArea').scrollHeight}
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300)},3000)}
 function quickAction(t){msgInput.value=t;msgInput.focus();msgInput.dispatchEvent(new Event('input'))}
 
 // ============ MODELS ============
@@ -381,22 +382,25 @@ async function loadSettings(){
         if(savedUrl)$('serverUrl').value=savedUrl;
         $('groqKey').value=localStorage.getItem('groqKey')||'';
         $('openrouterKey').value=localStorage.getItem('openrouterKey')||'';
-        const res=await fetch(`${API}/prompt`);
-        const data=await res.json();
-        $('systemPrompt').value=data.system_prompt||'';
+        try{const res=await fetch(`${API}/prompt`);const data=await res.json();$('systemPrompt').value=data.system_prompt||'';}catch(e){}
     }catch(e){}
 }
 async function saveSettings(){
     const serverUrl=$('serverUrl').value.trim();
     if(serverUrl){localStorage.setItem('serverUrl',serverUrl);API=serverUrl;}
     else{localStorage.removeItem('serverUrl');API='http://localhost:5001/api';}
-    const groqKey=$('groqKey').value.trim();
-    const openrouterKey=$('openrouterKey').value.trim();
-    if(groqKey)localStorage.setItem('groqKey',groqKey);else localStorage.removeItem('groqKey');
-    if(openrouterKey)localStorage.setItem('openrouterKey',openrouterKey);else localStorage.removeItem('openrouterKey');
-    await fetch(`${API}/prompt`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_prompt:$('systemPrompt').value})});
-    await fetch(`${API}/keys`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({groq_key:groqKey,openrouter_key:openrouterKey})});
+    localStorage.setItem('groqKey',$('groqKey').value.trim());
+    localStorage.setItem('openrouterKey',$('openrouterKey').value.trim());
     closeModal('settingsModal');
+    showToast('Settings saved!');
+    try{
+        await fetch(`${API}/prompt`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_prompt:$('systemPrompt').value})});
+        await fetch(`${API}/keys`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({groq_key:$('groqKey').value.trim(),openrouter_key:$('openrouterKey').value.trim())});
+        checkStatus();
+        loadModels();
+    }catch(e){
+        showToast('Cannot reach server. Check IP and WiFi.');
+    }
 }
 
 // ============ CYBER BACKGROUND ============
